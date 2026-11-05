@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>n8n vs ComfyUI：区别到底在哪</title>
+<style>
+  :root{
+    --ink:#17222b; --sub:#5a6a76; --line:#dde5ea; --bg:#f4f7fa; --card:#ffffff;
+    --n8n:#e4573d; --n8n-bg:#fdf0ec; --comfy:#1f6fa8; --comfy-bg:#ecf4fa;
+    --good:#1d8a56; --mid:#b07d1e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+    line-height:1.65;font-size:15.5px}
+  .wrap{max-width:960px;margin:0 auto;padding:36px 20px 60px}
+  h1{font-size:30px;margin:0 0 6px;letter-spacing:.5px}
+  .lede{color:var(--sub);font-size:16.5px;margin:0 0 26px}
+  .lede b{color:var(--ink)}
+  h2{font-size:20px;margin:34px 0 12px;padding-left:10px;border-left:4px solid var(--ink)}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .card.n8n{border-top:5px solid var(--n8n)} .card.comfy{border-top:5px solid var(--comfy)}
+  .card h3{margin:0 0 2px;font-size:21px}
+  .card .tag{display:inline-block;font-size:12.5px;padding:1px 9px;border-radius:99px;margin-bottom:10px}
+  .n8n .tag{background:var(--n8n-bg);color:var(--n8n)} .comfy .tag{background:var(--comfy-bg);color:var(--comfy)}
+  .card p{margin:8px 0;color:#33424e}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:12px 0 4px}
+  .flow span{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 9px;font-size:13px;white-space:nowrap}
+  .flow i{color:var(--sub);font-style:normal}
+  table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  th,td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+  th{background:#eef3f6;font-size:14px}
+  td:first-child{font-weight:600;white-space:nowrap;width:130px}
+  tr:last-child td{border-bottom:none}
+  .n8n-h{color:var(--n8n)} .comfy-h{color:var(--comfy)}
+  .fit{font-weight:700}
+  .fit.g{color:var(--good)} .fit.m{color:var(--mid)} .fit.b{color:#b03a2e}
+  .note{background:#fffbe9;border:1px solid #eadf9e;border-radius:12px;padding:14px 18px;margin-top:14px}
+  .verdict{background:var(--ink);color:#eaf1f5;border-radius:14px;padding:22px 26px;margin-top:16px}
+  .verdict h3{margin:0 0 8px;color:#fff;font-size:19px}
+  .verdict p{margin:6px 0;color:#c9d6de}
+  .verdict b{color:#fff}
+  .small{color:var(--sub);font-size:13.5px;margin-top:10px}
+  ul{margin:6px 0 6px 18px;padding:0} li{margin:3px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>n8n vs ComfyUI：区别到底在哪</h1>
+<p class="lede">一句话：<b>n8n 是「让系统互相说话」的编排器</b>，节点之间流的是数据；<b>ComfyUI 是「让模型一步步生图」的生成管线</b>，节点之间流的是图像。长得像，物种不同。</p>
+
+<div class="cards">
+  <div class="card n8n">
+    <h3>n8n</h3><span class="tag">自动化编排 · 工厂的调度室</span>
+    <p>每个节点是一个<b>动作</b>：收一封邮件、查一次数据库、调一个接口、判断一个条件、写一个文件。把节点连起来，就是让十几个软件替你接力干活。</p>
+    <div class="flow"><span>触发</span><i>→</i><span>取数据</span><i>→</i><span>调 AI</span><i>→</i><span>分支判断</span><i>→</i><span>发到各处</span></div>
+    <p class="small">流过节点的东西：JSON 数据、文本、文件。</p>
+  </div>
+  <div class="card comfy">
+    <h3>ComfyUI</h3><span class="tag">生成管线 · 数字暗房</span>
+    <p>每个节点是生图的一道<b>工序</b>：加载模型、编码提示词、采样、解码、放大、局部重绘。把节点连起来，就是一条可精细控制每一步的出图流水线。</p>
+    <div class="flow"><span>模型</span><i>→</i><span>提示词</span><i>→</i><span>采样</span><i>→</i><span>解码</span><i>→</i><span>放大/重绘</span><i>→</i><span>成图</span></div>
+    <p class="small">流过节点的东西：图像、Latent 张量、模型权重。</p>
+  </div>
+</div>
+
+<h2>核心对比</h2>
+<table>
+  <tr><th style="width:130px">维度</th><th class="n8n-h">n8n</th><th class="comfy-h">ComfyUI</th></tr>
+  <tr><td>设计目标</td><td>把不同软件/服务连起来自动干活</td><td>把一次图像/视频生成的每一步拆开控制</td></tr>
+  <tr><td>节点是什么</td><td>动作与集成：HTTP、邮件、表格、数据库、定时、分支、代码（JS/Python）等上千个</td><td>生成工序：模型加载、采样器、VAE、ControlNet、放大、合成等</td></tr>
+  <tr><td>典型输入 → 输出</td><td>一份数据 → 分发到多个平台的文件/消息/记录</td><td>提示词/参考图 → 图片或视频</td></tr>
+  <tr><td>AI 怎么接</td><td>AI Agent 节点、调接口、或命令节点调本地 CLI</td><td>以本地模型为主（吃你的显卡），另有官方 API 节点按量付费</td></tr>
+  <tr><td>你的订阅怎么用</td><td colspan="2">两边一样：聊天订阅不能直接当节点调用；正规通道是厂商 agent CLI（Codex 吃 ChatGPT 订阅、Claude Code 吃 Claude 订阅）——它可以当「操作员」经 MCP 帮你搭/跑工作流，也可以包成命令节点嵌进流程里。详见下方说明。</td></tr>
+  <tr><td>运行方式</td><td>服务器/电脑上常驻后台，定时或事件触发，无人值守</td><td>本地 GPU 机器上运行，多为手动或排队执行一批生成</td></tr>
+  <tr><td>费用</td><td>自托管免费（fair-code 许可）</td><td>本体免费开源；本地生图只花电费，API 节点另算</td></tr>
+  <tr><td>上手难度</td><td>节点多是填表配置，逻辑直观</td><td>要懂采样、CFG、模型生态，门槛明显更高</td></tr>
+  <tr><td>强项</td><td>多平台分发、定时任务、数据搬运、人审环节插入</td><td>出图质量与控制力：构图、局部重绘、批量变体、风格一致性</td></tr>
+  <tr><td>弱项</td><td>不会生图；像素级的创意活干不了</td><td>文本逻辑、外部系统、文件打包都别扭，不是它的活</td></tr>
+</table>
+
+<h2>落到你的社媒工作流：每一步谁干</h2>
+<table>
+  <tr><th style="width:210px">环节</th><th class="n8n-h">n8n</th><th class="comfy-h">ComfyUI</th></tr>
+  <tr><td>写标题 / 正文 / 标签</td><td class="fit g">主场——调订阅 CLI 生成，再按平台改写</td><td class="fit b">基本干不了</td></tr>
+  <tr><td>按平台分叉（一入多出）</td><td class="fit g">原生分支节点，天生干这个</td><td class="fit b">没有这概念</td></tr>
+  <tr><td>封面底图（游戏截图）</td><td class="fit g">取文件、按平台比例裁切，没问题</td><td class="fit m">也能裁，但杀鸡用牛刀</td></tr>
+  <tr><td>封面底图（AI 生成）</td><td class="fit b">自己不会，要外接</td><td class="fit g">主场——本地模型随便造</td></tr>
+  <tr><td>封面大字排版</td><td colspan="2">两边都不理想：正解是固定模板 + 程序渲染（字不糊、每期一致），作为一个步骤挂进 n8n 即可</td></tr>
+  <tr><td>打包成发布包 / 定时提醒</td><td class="fit g">主场——分文件夹、拼文案、定时触发</td><td class="fit b">干不了</td></tr>
+</table>
+
+<div class="note"><b>关于「订阅接入」再说清一层：</b>ChatGPT Plus / Claude 这类聊天订阅，任何厂商都没开放成「可被节点直接调用的接口」。能吃订阅的只有各家自己的 agent 工具（Codex、Claude Code、Gemini CLI，都是账号登录、订阅内计费）。所以拼法是两层：<b>画布负责流程，CLI 负责思考</b>——n8n 和 ComfyUI 都有官方 MCP，能让 Claude Code / Codex 直接在里面搭图、改图、跑图，你的订阅就是这样「接入」的。</div>
+
+<h2>两者不是二选一：合流形态</h2>
+<div class="card">
+  <div class="flow"><span>输入 brief+截图</span><i>→</i><span><b>n8n 主控</b></span><i>→</i><span>订阅 CLI 写文案</span><i>→</i><span>按平台分叉</span><i>→</i><span>需要 AI 底图时 HTTP 调 ComfyUI</span><i>→</i><span>模板排版</span><i>→</i><span>打包发布包</span></div>
+  <p style="margin:8px 0 0">n8n 是总调度，ComfyUI 是它随时能调用的一个「出图车间」。先只上 n8n 就能跑通整条线；哪天封面需要大量 AI 底图了，再把 ComfyUI 挂上去，不用推倒重来。</p>
+</div>
+
+<div class="verdict">
+  <h3>结论（针对你的情况）</h3>
+  <p><b>主工作流用 n8n。</b>你的内容是「文案 + 截图封面 + 多平台分发」，编排占九成、生图占一成，正好落在 n8n 的主场、ComfyUI 的边角。</p>
+  <p>出现这些信号时再加 ComfyUI：封面改以 AI 生图为主视觉、要批量出图变体、要做局部重绘/风格化处理。在那之前，装了也是闲置。</p>
+</div>
+
+<p class="small">配套文档：《社媒内容工作流蓝图 v1》（同目录 01-工作流蓝图.md）。本页结论基于 2026-11-06 的实查：n8n 自托管免费且有官方 MCP 与面向 Claude Code/Codex 的官方 skills；ComfyUI 有官方 MCP（公测）与社区 comfyui-mcp；Codex / Claude Code 均支持订阅登录与无头运行。</p>
+
+</div>
+</body>
+</html>
